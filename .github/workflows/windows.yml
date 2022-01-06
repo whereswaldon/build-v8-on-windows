@@ -8,7 +8,12 @@ jobs:
       - run: mkdir "C:\depot_tools"; tar -xf "C:\depot_tools.zip" -C "C:\depot_tools\"
       - name: update-path
         shell: pwsh
-        run: $PATH = [Environment]::GetEnvironmentVariable("PATH"); $dt = "C:\depot_tools"; [Environment]::SetEnvironmentVariable("PATH", "$dt;$PATH", "Machine"); echo $PATH
+        run: |
+          $PATH = [Environment]::GetEnvironmentVariable("PATH")
+          $dt = "C:\depot_tools"
+          [Environment]::SetEnvironmentVariable("PATH", "$dt;$PATH", "Machine")
+          $PATH = [Environment]::GetEnvironmentVariable("PATH")
+          echo $PATH
       - run: echo %PATH%
       - run: gclient
 
