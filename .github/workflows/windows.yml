@@ -27,6 +27,6 @@ jobs:
           echo ./tools/dev/gm.py x64.release
           dir
           dir tools/dev
-          ./tools/dev/gm.py x64.release
+          python3 ./tools/dev/gm.py x64.release
           dir out
 
