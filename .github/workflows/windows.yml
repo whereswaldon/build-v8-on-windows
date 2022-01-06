@@ -1,5 +1,5 @@
 name: build-v8
-on: [commit]
+on: [push]
 jobs:
   build-v8:
     runs-on: windows-latest
