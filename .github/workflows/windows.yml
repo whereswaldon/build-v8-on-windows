@@ -23,5 +23,6 @@ jobs:
         run: mkdir ~/v8
       - name: clone-v8
         shell: pwsh
+        continue-on-error: true
         run: cd ~/v8 && fetch v8 && cd v8
 
