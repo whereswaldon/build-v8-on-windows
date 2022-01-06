@@ -27,5 +27,7 @@ jobs:
           echo ./tools/dev/gm.py x64.release
           dir
           dir tools/dev
-          ./tools/dev/gm.py x64.release
+          ./tools/dev/gm.py -v x64.release
+          dir out
+          ninja -C out/x64.release
 
