@@ -5,3 +5,6 @@ jobs:
     runs-on: windows-latest
     steps:
       - run: echo "hello"
+      - run: $client = new-object System.Net.WebClient; $client.DownloadFile("https://storage.googleapis.com/chrome-infra/depot_tools.zip","C:\depot_tools.zip")
+      - run: Call :UnZipFile "C:\depot_tools\" "C:\depot_tools.zip"
+      - run: dir "C:\depot_tools"
