@@ -4,11 +4,6 @@ jobs:
   build-v8:
     runs-on: windows-latest
     steps:
-      - id: cache
-        uses: actions/cache@v2
-        with:
-          path: ~/v8
-          key: ${{ runner.os }}
       - name: install depot_tools
         shell: pwsh
         run: |
@@ -21,17 +16,10 @@ jobs:
         run: gclient
       - name: fetch-v8-code
         shell: pwsh
-        if: steps.cache.outputs.cache-hit != 'true'
         run: |
           mkdir ~/v8
           cd ~/v8
           fetch v8
-      - name: sync-v8-code
-        shell: pwsh
-        if: steps.cache.outputs.cache-hit == 'true'
-        run: |
-          cd ~/v8
-          sync v8
       - name: compile
         shell: pwsh
         run: |
