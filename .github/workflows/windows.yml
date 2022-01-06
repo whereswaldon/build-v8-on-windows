@@ -7,5 +7,8 @@ jobs:
       - run: $client = new-object System.Net.WebClient; $client.DownloadFile("https://storage.googleapis.com/chrome-infra/depot_tools.zip","C:\depot_tools.zip")
       - run: mkdir "C:\depot_tools"; tar -xf "C:\depot_tools.zip" -C "C:\depot_tools\"
       - run: setx /M path "C:\depot_tools;%path%"
-      - run: echo %PATH%; gclient
+      - name: update-path
+        shell: pwsh
+        run: $PATH = [Environment]::GetEnvironmentVariable("PATH"); $dt = "C:\depot_tools"; [Environment]::SetEnvironmentVariable("PATH", "$dt;$PATH", "Machine")
+      - run: gclient
 
