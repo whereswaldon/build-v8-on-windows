@@ -13,4 +13,7 @@ jobs:
       - name: set-up-gclient
         shell: cmd
         run: gclient
+      - name: clone-v8
+        shell: pwsh
+        run: mkdir ~/v8 && cd ~/v8 && fetch v8 && cd v8
 
