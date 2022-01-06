@@ -22,12 +22,19 @@ jobs:
       - name: fetch-v8-code
         shell: pwsh
         if: steps.cache.outputs.cache-hit != 'true'
-        run: mkdir ~/v8 && cd ~/v8 && fetch v8
+        run: |
+          mkdir ~/v8
+          cd ~/v8
+          fetch v8
       - name: sync-v8-code
         shell: pwsh
         if: steps.cache.outputs.cache-hit == 'true'
-        run: cd ~/v8 && sync v8
+        run: |
+          cd ~/v8
+          sync v8
       - name: compile
         shell: pwsh
-        run: cd ~/v8/v8 && ./tools/dev/gm.py x64.release
+        run: |
+          cd ~/v8/v8
+          ./tools/dev/gm.py x64.release
 
