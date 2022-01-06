@@ -4,6 +4,11 @@ jobs:
   build-v8:
     runs-on: windows-latest
     steps:
+      - id: cache
+        uses: actions/cache@v2
+        with:
+          path: ~/v8
+          key: ${{ runner.os }}
       - name: install depot_tools
         shell: pwsh
         run: |
@@ -13,7 +18,10 @@ jobs:
       - name: set-up-gclient
         shell: cmd
         run: gclient
+      - name: make-dir
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: mkdir ~/v8
       - name: clone-v8
         shell: pwsh
-        run: mkdir ~/v8 && cd ~/v8 && fetch v8 && cd v8
+        run: cd ~/v8 && fetch v8 && cd v8
 
