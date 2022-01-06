@@ -10,7 +10,7 @@ jobs:
           $client = new-object System.Net.WebClient; $client.DownloadFile("https://storage.googleapis.com/chrome-infra/depot_tools.zip","C:\depot_tools.zip")
           mkdir "C:\depot_tools"; tar -xf "C:\depot_tools.zip" -C "C:\depot_tools\"
           echo "C:\depot_tools" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-          echo DEPOT_TOOLS_WIN_TOOLCHAIN=0 | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          echo DEPOT_TOOLS_WIN_TOOLCHAIN=0 "vs2019_install=C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
       - name: set-up-gclient
         shell: cmd
         run: gclient
@@ -27,7 +27,6 @@ jobs:
           echo ./tools/dev/gm.py x64.release
           dir
           dir tools/dev
-          ./tools/dev/gm.py -v x64.release
+          ./tools/dev/gm.py x64.release
           dir out
-          ninja -C out/x64.release
 
