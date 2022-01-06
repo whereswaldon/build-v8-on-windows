@@ -19,10 +19,12 @@ jobs:
       - name: set-up-gclient
         shell: cmd
         run: gclient
-      - name: make-dir
+      - name: fetch-v8-code
+        shell: pwsh
         if: steps.cache.outputs.cache-hit != 'true'
         run: mkdir ~/v8 && cd ~/v8 && fetch v8
-      - name: clone-v8
+      - name: sync-v8-code
         shell: pwsh
+        if: steps.cache.outputs.cache-hit == 'true'
         run: cd ~/v8 && sync v8
 
