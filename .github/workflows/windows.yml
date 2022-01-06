@@ -24,5 +24,7 @@ jobs:
         shell: pwsh
         run: |
           cd ~/v8/v8
+          dir
+          dir v8
           ./tools/dev/gm.py x64.release
 
