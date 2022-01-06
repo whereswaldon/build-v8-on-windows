@@ -1,0 +1,7 @@
+name: build-v8
+on: [commit]
+jobs:
+  build-v8:
+    runs-on: windows-latest
+    steps:
+      - run: echo "hello"
