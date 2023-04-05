@@ -36,4 +36,3 @@ jobs:
           gclient sync
           python3 ./tools/dev/gm.py x64.release
           dir out
-
