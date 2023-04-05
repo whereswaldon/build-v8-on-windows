@@ -4,6 +4,15 @@ jobs:
   build-v8:
     runs-on: windows-latest
     steps:
+      - name: Cache
+        uses: actions/cache@v2.1.8
+        with:
+          # A list of files, directories, and wildcard patterns to cache and restore
+          path: |
+            "C:\\depot_tools"
+            "~/v8"
+          # An explicit key for restoring and saving the cache
+          key: windows
       - name: install depot_tools
         shell: pwsh
         run: |
@@ -24,9 +33,7 @@ jobs:
         shell: pwsh
         run: |
           cd ~/v8/v8
-          echo ./tools/dev/gm.py x64.release
-          dir
-          dir tools/dev
+          gclient sync
           python3 ./tools/dev/gm.py x64.release
           dir out
 
