@@ -4,6 +4,10 @@ jobs:
   build-v8:
     runs-on: ubuntu-latest
     steps:
+      - name: Setup Go environment
+        uses: actions/setup-go@v4.0.0
+      - name: Checkout
+        uses: actions/checkout@v3.5.0
       - name: Cache
         uses: actions/cache@v2.1.8
         with:
@@ -17,3 +21,6 @@ jobs:
         run: |
           git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
           echo "$(realpath depot_tools)" >> $GITHUB_PATH
+      - name: install depot_tools
+        run: |
+          go generate -x
