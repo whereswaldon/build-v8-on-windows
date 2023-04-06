@@ -1,4 +1,4 @@
-name: build-v8-unix
+name: build-v8-linux
 on: [push]
 jobs:
   build-v8-linux:
@@ -32,34 +32,3 @@ jobs:
           path: |
             v8/include/
             linux_amd64/
-  build-v8-darwin:
-    runs-on: macos-latest
-    steps:
-      - name: Setup Go environment
-        uses: actions/setup-go@v4.0.0
-      - name: Checkout
-        uses: actions/checkout@v3.5.0
-      - name: Cache
-        uses: actions/cache@v3
-        with:
-          # A list of files, directories, and wildcard patterns to cache and restore
-          path: |
-            "depot_tools"
-            "v8"
-          # An explicit key for restoring and saving the cache
-          key: v8-unix
-      - name: install depot_tools
-        run: |
-          brew install ninja
-          git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
-          echo "$(pwd)/depot_tools" >> $GITHUB_PATH
-      - name: build v8
-        run: |
-          go run .
-      - uses: actions/upload-artifact@v3
-        with:
-          name: darwin-headers-and-libraries
-          path: |
-            v8/include/
-            darwin_amd64/
-            darwin_arm64/
