@@ -5,34 +5,29 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Cache
-        uses: actions/cache@v2.1.8
+        uses: actions/cache@v3
         with:
           # A list of files, directories, and wildcard patterns to cache and restore
           path: |
-            "C:\\depot_tools"
-            "~/v8"
+            C:\\depot_tools
+            v8
           # An explicit key for restoring and saving the cache
           key: windows
       - name: install depot_tools
         shell: pwsh
         run: |
           $client = new-object System.Net.WebClient; $client.DownloadFile("https://storage.googleapis.com/chrome-infra/depot_tools.zip","C:\depot_tools.zip")
-          mkdir "C:\depot_tools"; tar -xf "C:\depot_tools.zip" -C "C:\depot_tools\"
+          mkdir "C:\depot_tools"; tar -xf "C:\depot_tools.zip" -C "C:\depot_tools"
           echo "C:\depot_tools" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           echo DEPOT_TOOLS_WIN_TOOLCHAIN=0 "vs2019_install=C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-      - name: set-up-gclient
+      - name: build v8
         shell: cmd
-        run: gclient
-      - name: fetch-v8-code
-        shell: pwsh
         run: |
-          mkdir ~/v8
-          cd ~/v8
-          fetch v8
-      - name: compile
-        shell: pwsh
-        run: |
-          cd ~/v8/v8
-          gclient sync
-          python3 ./tools/dev/gm.py x64.release
-          dir out
+          gclient
+          go run .
+      - uses: actions/upload-artifact@v3
+        with:
+          name: windows-headers-and-libraries
+          path: |
+            v8/include/
+            windows_amd64/
