@@ -14,8 +14,8 @@ jobs:
         with:
           # A list of files, directories, and wildcard patterns to cache and restore
           path: |
-            "depot_tools"
-            "v8"
+            depot_tools
+            v8
           # An explicit key for restoring and saving the cache
           key: v8-unix
       - name: install depot_tools
