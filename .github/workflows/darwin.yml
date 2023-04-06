@@ -2,8 +2,7 @@ name: build-v8-darwin
 on: [workflow_dispatch]
 jobs:
   build-v8-darwin:
-    # Use older macOS to get older python, as depot_tools needs <= 3.9
-    runs-on: macos-10.15
+    runs-on: macos-latest
     steps:
       - name: Setup Go environment
         uses: actions/setup-go@v4.0.0
@@ -20,9 +19,12 @@ jobs:
           key: v8-unix
       - name: install depot_tools
         run: |
-          brew install ninja
+          brew install ninja python@3.9
           git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+          # Make homebrew's bin dir first so that its python is found before the system one.
+          echo "/usr/local/bin" >> $GITHUB_PATH
           echo "$(pwd)/depot_tools" >> $GITHUB_PATH
+          python3 --version
       - name: build v8
         run: |
           go run .
