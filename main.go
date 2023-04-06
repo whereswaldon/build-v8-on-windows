@@ -1,13 +1,13 @@
 /*
-This package is meant to be invoked by go generate and acts as a build
-script for v8. Follow the official v8 instructions to install depot_tools
-and whatever v8's build dependencies are before running this package.
+This package is acts as a build script for v8. Follow the official v8 instructions to
+install depot_tools and whatever v8's build dependencies are before running this package.
 
 https://v8.dev/docs/build
 */
 package main
 
 import (
+        "flag"
 	"io"
 	"log"
 	"os"
@@ -16,19 +16,18 @@ import (
 	"runtime"
 )
 
-//go:generate go run .
-
 // gnArgs are basic arguments for the gn build system that we
 // always want to use.
 const gnArgs = `
 is_debug=false
+is_clang=true
 symbol_level=0
 strip_debug_info=0
 clang_use_chrome_plugins=false
 use_custom_libcxx=false
 use_sysroot=false
-is_component_build=false
-v8_monolithic=true
+is_component_build=true
+v8_monolithic=false
 v8_use_external_startup_data=false
 treat_warnings_as_errors=false
 v8_embedder_string="-v8go"
@@ -36,6 +35,7 @@ v8_enable_gdbjit=false
 v8_enable_test_features=false
 exclude_unwind_tables=true
 `
+// consider fixing PGO and enabling is_official_build=true
 
 // gnArgsForArch returns the gn config contents to build for the given arch.
 func gnArgsForArch(arch string) string {
@@ -132,26 +132,44 @@ func pwd() string {
 	return cwd
 }
 
+// glob performs a filesystem glob match using str as the pattern.
+func glob(str string) []string {
+	matches, err := filepath.Glob(str)
+	if err != nil {
+		panic(err)
+	}
+	return matches
+}
+
+// cpAll copies all paths in srcs to destDir.
+func cpAll(srces []string, destDir string) {
+	for _, src := range srces {
+		cp(src, filepath.Join(destDir, filepath.Base(src)))
+	}
+}
+
 func main() {
+        var v8Version string
+        var archesList string
+        if runtime.GOOS=="darwin" {
+            archesList="arm64,amd64"
+        } else {
+            archesList="amd64"
+        }
+        flag.StringVar(&v8Version, "v8-version", "remotes/branch-heads/9.4", "the v8 branch to use the head commit of")
+        flag.StringVar(&archesList, "arches", archesList, "comma-delimited list of architectures to build for")
+        flag.Parse()
 	startDir := pwd()
 	// Update v8 repo.
 	if !isDir("v8") {
 		sh("fetch", "v8")
 	}
 	cd("v8")
+	sh("git", "checkout", v8Version)
 	sh("gclient", "sync")
 	// Build v8.
-	arches := []string{"amd64"}
-	if runtime.GOOS == "darwin" {
-		// Build for both major macOS architectures.
-		arches = append(arches, "arm64")
-	}
+	arches := strings.Split(archesList, ",")
 	outDirs := []string{}
-
-	const (
-		initialArchiveName = "libv8_monolith.a"
-		finalArchiveName   = "libv8.a"
-	)
 
 	// Build for each architecture.
 	for _, arch := range arches {
@@ -162,10 +180,20 @@ func main() {
 		mkdir(dir)
 		writeFile(filepath.Join(dir, "args.gn"), gnArgsForArch(arch))
 		sh("gn", "gen", dir)
-		sh("ninja", "-C", dir, "v8_monolith")
-		cp(
-			filepath.Join(dir, "obj", initialArchiveName),
-			filepath.Join(outDir, finalArchiveName),
-		)
+		sh("ninja", "-C", dir, "v8", "v8_headers")
+		cpAll(glob(filepath.Join(dir, "*."+sharedLibSuffix())), outDir)
+	}
+}
+
+func sharedLibSuffix() string {
+	switch runtime.GOOS {
+	case "windows":
+		return "dll"
+	case "darwin":
+		return "dylib"
+	case "linux":
+		return "so"
+	default:
+		return ""
 	}
 }
