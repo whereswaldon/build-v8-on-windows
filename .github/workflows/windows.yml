@@ -4,6 +4,10 @@ jobs:
   build-v8:
     runs-on: windows-latest
     steps:
+      - name: Setup Go environment
+        uses: actions/setup-go@v4.0.0
+      - name: Checkout
+        uses: actions/checkout@v3.5.0
       - name: Cache
         id: cache
         uses: actions/cache@v3
