@@ -48,6 +48,7 @@ jobs:
           key: v8-unix
       - name: install depot_tools
         run: |
+          brew install coreutils
           git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
           echo "$(realpath depot_tools)" >> $GITHUB_PATH
       - name: build v8
