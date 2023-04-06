@@ -5,6 +5,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Cache
+        id: cache
         uses: actions/cache@v3
         with:
           # A list of files, directories, and wildcard patterns to cache and restore
@@ -14,6 +15,7 @@ jobs:
           # An explicit key for restoring and saving the cache
           key: windows
       - name: install depot_tools
+        if: steps.cache.outputs.cache-hit != 'true'
         shell: pwsh
         run: |
           $client = new-object System.Net.WebClient; $client.DownloadFile("https://storage.googleapis.com/chrome-infra/depot_tools.zip","C:\depot_tools.zip")
