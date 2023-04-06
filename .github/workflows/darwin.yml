@@ -3,7 +3,7 @@ on: [workflow_dispatch]
 jobs:
   build-v8-darwin:
     # Use older macOS to get older python, as depot_tools needs <= 3.9
-    runs-on: macos-11
+    runs-on: macos-10.15
     steps:
       - name: Setup Go environment
         uses: actions/setup-go@v4.0.0
