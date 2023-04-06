@@ -1,8 +1,9 @@
 name: build-v8-darwin
-on: [pull_request]
+on: [workflow_dispatch]
 jobs:
   build-v8-darwin:
-    runs-on: macos-latest
+    # Use older macOS to get older python, as depot_tools needs <= 3.9
+    runs-on: macos-11
     steps:
       - name: Setup Go environment
         uses: actions/setup-go@v4.0.0

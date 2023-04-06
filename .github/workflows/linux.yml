@@ -1,5 +1,5 @@
 name: build-v8-linux
-on: [push]
+on: [workflow_dispatch]
 jobs:
   build-v8-linux:
     # Run on older ubuntu because target version of depot_tools relies upon Python <= 3.9
