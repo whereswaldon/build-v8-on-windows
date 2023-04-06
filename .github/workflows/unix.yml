@@ -19,6 +19,7 @@ jobs:
           key: v8-unix
       - name: install depot_tools
         run: |
+          sudo apt-get update && sudo apt-get install -y ninja-build
           git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
           echo "$(realpath depot_tools)" >> $GITHUB_PATH
       - name: build v8
@@ -48,9 +49,9 @@ jobs:
           key: v8-unix
       - name: install depot_tools
         run: |
-          brew install coreutils
+          brew install ninja
           git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
-          echo "$(realpath depot_tools)" >> $GITHUB_PATH
+          echo "$(pwd)/depot_tools" >> $GITHUB_PATH
       - name: build v8
         run: |
           go run .
